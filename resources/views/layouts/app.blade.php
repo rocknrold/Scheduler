@@ -79,7 +79,7 @@
                                             @csrf
                                         </form>
                                     @elseif(Auth::user()->type == "google")
-                                        <a class="dropdown-item" href="/login" onclick="signOut();">Sign out</a>
+                                        <a class="dropdown-item" href="#" onclick="signOut();">Sign out</a>
                                     @endif
                                 </div>
                             </li>
