@@ -57,7 +57,11 @@
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{-- ADD USER AVATAR BEHIND NAME --}}
-                                    <img src="/storage/{{ Auth::user()->avatar }}" style="width:32px; height:32px; position:left; top:10px; left:10px; border-radius:50%">
+                                    @if(Auth::user()->type == "google")
+                                        <img src="{{ Auth::user()->avatar }}" style="width:32px; height:32px; position:left; top:10px; left:10px; border-radius:50%">
+                                    @else
+                                        <img src="/storage/{{ Auth::user()->avatar }}" style="width:32px; height:32px; position:left; top:10px; left:10px; border-radius:50%">
+                                    @endif
                                     {{ Auth::user()->name }}
                                 </a>
 
