@@ -14,9 +14,6 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-        {{-- GOOGLE PLATFORM IDENTITY API --}}
-    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
@@ -25,6 +22,30 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
+
+<script>
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+        console.log('User signed out.');
+            jQuery(function($){
+                $.ajax({
+                    type:'POST',
+                    url:'/logout',
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    success:function(data){  window.location.replace("/login");},
+                    error:function(data){console.log(data)},
+                });
+            });
+        });
+    }
+    function onLoad() {
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
+    }
+    </script>
+
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
@@ -96,27 +117,7 @@
     {{-- ALL SCRIPTS --}}
     {{-- YIELDS SCRIPTS --}}
     @yield('scripts')
-    <script>
-    function signOut() {
-        var auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(function () {
-        console.log('User signed out.');
-            jQuery(function($){
-                $.ajax({
-                    type:'POST',
-                    url:'/logout',
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                    success:function(data){  window.location.replace("/login");},
-                    error:function(data){console.log(data)},
-                });
-            });
-        });
-    }
-    function onLoad() {
-      gapi.load('auth2', function() {
-        gapi.auth2.init();
-      });
-    }
-    </script>
+    {{-- GOOGLE PLATFORM IDENTITY API --}}
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 </body>
 </html>
