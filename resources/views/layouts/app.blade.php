@@ -79,7 +79,7 @@
                                             @csrf
                                         </form>
                                     @elseif(Auth::user()->type == "google")
-                                        <a class="dropdown-item" href="#" onclick="signOut();">Sign out</a>
+                                        <a class="dropdown-item" href="/login" onclick="signOut();">Sign out</a>
                                     @endif
                                 </div>
                             </li>
@@ -97,11 +97,6 @@
     {{-- YIELDS SCRIPTS --}}
     @yield('scripts')
     <script>
-    function onLoad() {
-      gapi.load('auth2', function() {
-        gapi.auth2.init();
-      });
-    }
     function signOut() {
         var auth2 = gapi.auth2.getAuthInstance();
         auth2.signOut().then(function () {
@@ -116,6 +111,11 @@
                 });
             });
         });
+    }
+    function onLoad() {
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
     }
     </script>
 </body>
