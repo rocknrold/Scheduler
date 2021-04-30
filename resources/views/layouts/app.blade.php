@@ -14,6 +14,9 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
+        {{-- GOOGLE PLATFORM IDENTITY API --}}
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
@@ -91,8 +94,6 @@
         </main>
     </div>
     {{-- ALL SCRIPTS --}}
-    {{-- GOOGLE PLATFORM IDENTITY API --}}
-    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
     {{-- YIELDS SCRIPTS --}}
     @yield('scripts')
     <script>
