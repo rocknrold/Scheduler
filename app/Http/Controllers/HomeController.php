@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Client;
+use App\Models\Appointment;
+use App\Models\Feedback;
 
 class HomeController extends Controller
 {
@@ -23,6 +26,19 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $feeds = Feedback::feedbacks();
+        // $feeds = Client::clientFeedback();
+        // dd($feeds);
+        return view('home')->with($feeds);
+    }
+
+    public function chartHeaders(Request $request)
+    {   
+        $appoint = Appointment::appointmentToday();
+        $onging = Appointment::ongoing();
+        $finish = Appointment::finished();
+        $client = Client::newClients();
+
+        return response()->json([$appoint,$onging,$finish,$client]);
     }
 }
