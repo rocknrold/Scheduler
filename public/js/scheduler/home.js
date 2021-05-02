@@ -155,7 +155,7 @@ $(function(){
 
     $('#modal-app-edit').on('show.bs.modal', function (event) {
         var id = $(event.relatedTarget).data('id') 
-        console.log(id);
+        //console.log(id);
         var modal = $(this);
         $.ajax({
             type: "GET",
@@ -224,7 +224,7 @@ $(function(){
 
     $("#tableAppoint").on('click',".deletebtn",function(e) {
         var id = $(this).data('id');
-        console.log(id);
+        //console.log(id);
         e.preventDefault();
         bootbox.confirm({
             message: "Do you really want to delete this?",

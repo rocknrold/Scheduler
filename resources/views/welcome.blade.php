@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Scheduler</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -61,7 +61,7 @@
                             <div class="ml-12">
                                 <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
                                     Manage your time efficiently with Scheduler. With here you can easily create, read update and delete schedules right away.
-                                    Supports graphs and management tools suited for your needs. 
+                                    Supports graphs and management tools suited for your needs. <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Log in</a> here.
                                 </div>
                             </div>
                         </div>
