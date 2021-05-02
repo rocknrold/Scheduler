@@ -27,9 +27,9 @@ class HomeController extends Controller
     public function index()
     {
         $feeds = Feedback::feedbacks();
-        // $feeds = Client::clientFeedback();
-        // dd($feeds);
-        return view('home')->with($feeds);
+        $appointments = Appointment::with(['clients'])->orderBy('date','desc')->paginate(5, ['*'], 'page_app');
+        // dd($appointments);
+        return view('home')->with(['appointments'=>$appointments,'feeds'=>$feeds]);
     }
 
     public function chartHeaders(Request $request)

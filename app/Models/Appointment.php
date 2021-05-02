@@ -50,7 +50,7 @@ class Appointment extends Model
         $todate = date('Y-m-d', strtotime(now()));
         
         $wapp = DB::select("SELECT COUNT(DISTINCT(client_id)) as num, date 
-                            FROM `appointments`
+                            FROM appointments
                             WHERE date BETWEEN '".$fromdate."' AND '".$todate."' 
                             GROUP BY date");
         

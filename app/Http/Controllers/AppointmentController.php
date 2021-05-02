@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Client;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -14,7 +15,7 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     public function weeksAppointment(Request $request)
@@ -41,7 +42,37 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        $validated = $request->validate([
+            'name' => 'required',
+            'age' => 'required|numeric',
+            'gender' => 'required',
+            'address' => 'required',
+            'date' => 'required',
+            'time' => 'required',
+        ]);
+
+        if($validated){
+            
+            $client = Client::create([
+                'name' => $request->name,
+                'age'  => $request->age,
+                'gender' => $request->gender,
+                'address' => $request->address,
+            ]);
+            
+            $napp = Appointment::create([
+                'client_id' => $client->id,
+                'date' => $request->date,
+                'time' => $request->time,
+                'status'=> 'ongoing',
+            ]);
+            
+            return response()->json([$client,$napp]);
+            
+        }else {
+            return response()->json($validated->errors());
+        }
     }
 
     /**
@@ -63,7 +94,8 @@ class AppointmentController extends Controller
      */
     public function edit(Appointment $appointment)
     {
-        //
+        $eapp = Appointment::find($appointment->id);
+        return $eapp;
     }
 
     /**
@@ -75,7 +107,27 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, Appointment $appointment)
     {
-        //
+        // dd($request->all());
+
+        $validated = $request->validate([
+            'status' => 'required',
+            'date' => 'required',
+            'time' => 'required',
+        ]);
+
+        if($validated)
+        {
+            $uapp = Appointment::where('id',$request->id)->update([
+                                        'status'=>$request->status,
+                                        'date'=>$request->date,
+                                        'time'=>$request->time,
+                                    ]);
+
+            return response()->json(Appointment::with(['clients'])->where('id',$request->id)->first());
+        } else 
+        {
+            return response()->json($validated->errors());
+        }
     }
 
     /**
@@ -86,6 +138,10 @@ class AppointmentController extends Controller
      */
     public function destroy(Appointment $appointment)
     {
-        //
+        // dd($appointment);
+        $dapp = Appointment::findOrFail($appointment->id);
+        $dapp->delete();
+        
+        return response()->json($dapp);
     }
 }

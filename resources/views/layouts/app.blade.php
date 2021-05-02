@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
     {{-- <meta name="google-signin-client_id" content="583439515778-ip59hm3jlhqg1hm3vbcdme433mcu0irj.apps.googleusercontent.com"> --}}
-    <meta name="google-signin-client_id" content="454455940038-q8kdrp7b3um8dimq4adus1sucfilr35p.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="583439515778-ip59hm3jlhqg1hm3vbcdme433mcu0irj.apps.googleusercontent.com">
 
 
     <!-- CSRF Token -->
@@ -19,6 +19,10 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
 
     <!-- GOOGLE CHARTS -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -26,7 +30,8 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-
+    <!-- Icons -->
+    <script src="https://kit.fontawesome.com/c88097f817.js" crossorigin="anonymous"></script>
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{asset('css/sb-admin-2.min.css')}}" rel="stylesheet">
@@ -119,17 +124,14 @@
                 </div>
             </div>
         </nav>
-
-        {{-- <main class="py-4"> --}}
             <main>
                 @yield('content')
             </main>
-        {{-- </main> --}}
     </div>
     {{-- <main> --}}
     @yield('home')
     {{-- </main> --}}
-    {{-- ALL SCRIPTS --}}
+
     {{-- YIELDS SCRIPTS --}}
     @yield('scripts')
     {{-- GOOGLE PLATFORM IDENTITY API --}}

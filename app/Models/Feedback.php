@@ -17,7 +17,7 @@ class Feedback extends Model
 
     public static function feedbacks()
     {
-        $feed = Feedback::with('client')->paginate(2);
-        return ['feeds' => $feed];
+        $feed = Feedback::with('client')->paginate(5);
+        return $feed;
     }
 }

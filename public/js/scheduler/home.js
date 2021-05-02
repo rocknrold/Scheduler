@@ -49,18 +49,10 @@ $(function(){
         url:'/cheaders',
         dataType:'json',
         success:function(response){
-            console.log(response);
-            $('#todayAppoint').html(response[0].appointments);
-
-            var progress = response[2].finished/response[0].appointments * 100;
-            var progress = isNaN(progress) ? 0 : progress;
-            console.log(progress);
-            $('#ongoingLeft').html(response[1].ongoing + " LEFT");
-            $('#ongoing').html(progress.toFixed(0) + "%");
-            $('#ongoingProgress').css('width', progress.toFixed(0)+"%");
-
-            $('#finish').html(response[2].finished);   
-            $('#newClients').html(response[3].client);
+            chartHeaders(response[0].appointments,
+                        response[2].finished,
+                        response[1].ongoing,
+                        response[3].client);
         },
         error:function(response){
             console.log(response);
@@ -100,7 +92,9 @@ $(function(){
                 },
                 vAxis: {
                 title: 'Clients Appointment'
-                }
+                },
+                width:'100%',
+                height:'200px',
                 };
 
                 var chart = new google.visualization.ColumnChart(
@@ -110,8 +104,182 @@ $(function(){
             }
         },
         error:function(response){
-            console.log(error);
+            console.log(response);
         }
     })
 
+    $('#appointSave').on('click',function(e){
+        e.preventDefault();
+
+        var name = $('#name').val();
+        var age = $('#age').val();
+        var address = $('#address').val();
+        var date = $('#date').val();
+        var time = $('#time').val();
+
+        if(name != "" && age != "" && address != "" && date != "" && time != "") {
+            $.ajax({
+                type:'POST',
+                url:'/appointments',
+                data: $("#appointForm").serialize(),
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success:function(response){
+                    // console.log(response);
+                    $('#statusAppForm').html("Appointment Added!");
+                    $('#tableAppoint').prepend('<tr id="'+response[1].id+'"><td>'+name+'</td>'+
+                                            '<td>'+date+'</td><td>'+time+'</td><td>ongoing</td><td>'+
+                                            '<a data-toggle="modal" data-target="#modal-app-edit" data-id="'+ response[1].id +'">'+
+                                            '<i class="fa fa-pen"></i></a>'+
+                                            '<a class="deletebtn" data-id="'+ response[1].id +'">'+
+                                            '<i class="fa fa-trash-o"></i></a>'+
+                                            '</td></tr>');       
+                    $('#name').val("");
+                    $('#age').val("");
+                    $('#address').val("");
+                    $('#date').val("");
+                    $('#time').val("");
+
+                    chartHeaders(parseInt($('#todayAppoint').text()) + 1,
+                                parseInt($('#finish').text()),
+                                parseInt($('#ongoingLeft').text()) + 1,
+                                );
+                },
+                error:function(response){
+                    console.log(response);
+                }
+            })   
+        } else {
+            alert("All fields are required");
+        }
+    });
+
+    $('#modal-app-edit').on('show.bs.modal', function (event) {
+        var id = $(event.relatedTarget).data('id') 
+        console.log(id);
+        var modal = $(this);
+        $.ajax({
+            type: "GET",
+            url: "/appointments/"+id+"/edit",
+            dataType: 'json',
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            success: function (response) {
+                // console.log(response);
+                modal.find('#apppoint_id').val(response.id);
+                modal.find('#statusE').val(response.status).attr('selected',true);
+                modal.find('#dateE').val(response.date);
+                modal.find('#timeE').val(response.time);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    })
+    
+    $('#modal-app-edit').on('hidden.bs.modal', function (e) {
+        $(this).find('form').trigger("reset");
+        $('#statusAppFormE').html("");
+    });
+
+    $('#appointUpdate').on('click',function(e){
+        e.preventDefault();
+        var id = $('input[id="apppoint_id"]').val();
+        $.ajax({
+            type:'PUT',
+            url:'/appointments/'+id+'',
+            data:$('#appointEditForm').serialize(),
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            success:function(response){
+                // console.log(response);
+                $('#statusAppFormE').html("Successfully Edited!");
+                $('#app_'+id+'').html('<td>'+response.clients.name+'</td>'+
+                '<td>'+response.date+'</td><td>'+response.time+'</td><td>'+response.status+'</td><td>'+
+                '<a data-toggle="modal" data-target="#modal-app-edit" data-id="'+ response.id +'">'+
+                '<i class="fa fa-pen"></i></a>'+
+                '<a class="deletebtn" data-id="'+ response.id +'">'+
+                '<i class="fa fa-trash-o"></i></a>'+
+                '</td></tr></div>');  
+
+
+                if(response.status === "finished"){
+                    if( parseInt($('#ongoingLeft').text()) >= 1){
+                        chartHeaders(parseInt($('#todayAppoint').text()),
+                        parseInt($('#finish').text()) + 1,
+                        parseInt($('#ongoingLeft').text()) - 1);
+                    }
+                } else if(response.status === "ongoing"){
+                    if(parseInt($('#finish').text()) >= 1){
+                        chartHeaders(parseInt($('#todayAppoint').text()),
+                        parseInt($('#finish').text()) - 1,
+                        parseInt($('#ongoingLeft').text()) + 1);
+                    }
+                }
+            },
+            error:function(response){
+                console.log(response);
+            },
+        });
+    });
+
+// DELETE
+
+    $("#tableAppoint").on('click',".deletebtn",function(e) {
+        var id = $(this).data('id');
+        console.log(id);
+        e.preventDefault();
+        bootbox.confirm({
+            message: "Do you really want to delete this?",
+            size:'small',
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if(result){
+                    $.ajax({
+                        type: "DELETE",
+                        url: "/appointments/"+ id,
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        success: function(response) {
+                            $('#app_'+ id).remove();
+                            $('#delToast').toast('show');
+                            
+                            if(response.status === "finished"){
+                                chartHeaders(parseInt($('#todayAppoint').text()) - 1,
+                                parseInt($('#finish').text()) - 1,
+                                parseInt($('#ongoingLeft').text()));
+
+                            } else if(response.status === "ongoing"){
+                                chartHeaders(parseInt($('#todayAppoint').text()) - 1,
+                                parseInt($('#finish').text()),
+                                parseInt($('#ongoingLeft').text()) - 1);
+                            }
+                        },
+                        error: function(error) {
+                            console.log('error');
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    function chartHeaders(appointments,finished,ongoing,client=parseInt($('#newClients').text())){
+        $('#todayAppoint').html(appointments);
+        
+        var progress = finished/appointments * 100;
+        var progress = isNaN(progress) ? 0 : progress;
+
+        $('#ongoingLeft').html(ongoing);
+        $('#ongoing').html(progress.toFixed(0) + "%");
+        $('#ongoingProgress').css('width', progress.toFixed(0)+"%");
+
+        $('#finish').html(finished);   
+        $('#newClients').html(client);
+    }
 });

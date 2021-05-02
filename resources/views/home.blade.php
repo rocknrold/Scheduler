@@ -7,10 +7,7 @@
         <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color:#3b5998">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/home">
                 <div class="sidebar-brand-text mx-3">
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -86,6 +83,14 @@
             <!-- Main Content -->
             <div id="content">
 
+                    <!--Toast-->
+                    <div class="toast" id="delToast" style="position: absolute; top: 0; right: 0; background-color:yellow;" delay=5000>
+                        <div class="toast-header">
+                            <strong class="mr-auto"><i class="fa fa-grav"></i> Delete</strong>
+                        </div>
+                        <div class="toast-body">Appointment has been removed from the schedule list</div>
+                    </div>
+
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
@@ -101,7 +106,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                 Appointments</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="todayAppoint">20</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="todayAppoint">0</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -119,10 +124,10 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                 New Clients</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="newClients">10</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="newClients">0</div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                            <i class="fas fa-user fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -140,7 +145,7 @@
                                             </div>
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="ongoing">50%</div>
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="ongoing">0</div>
                                                 </div>
                                                 <div class="col">
                                                     <div class="progress progress-sm mr-2">
@@ -168,10 +173,10 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 Finished</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="finish">18</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="finish">0</div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                            <i class="fas fa-check fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -189,27 +194,106 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Appointments</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                         </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
                                     </div>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
-                                    </div>
+                                       <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#appCreate">
+                                        ADD
+                                        </button>
+
+                                        <!-- Modal ADD -->
+                                        <div class="modal fade" id="appCreate" tabindex="-1" role="dialog" aria-labelledby="appCreateLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="appCreateLabel">Schedule new appointment</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="alert alert-success" role="alert" id="statusAppForm"></div>
+                                                <form action="#" method="POST" id="appointForm">
+                                                    @csrf
+                                                    <div class="form-group">
+                                                        <input class="form-control" type="text" id="name" name="name" placeholder="Name*" required><br>
+                                                        <input class="form-control" type="number" id="age" name="age" placeholder="Age*" min='0' max='100' required><br>
+                                                        <select name="gender" id="gender" class="custom-select" aria-label=".form-select-lg example">
+                                                            <option value="male">Male</option>
+                                                            <option value="female">Female</option>
+                                                        </select>
+                                                        <br><br>
+                                                        <input class="form-control" type="text" id="address" name="address" placeholder="Address*" required><br>
+                                                        <input class="form-control" type="date" id="date" name="date" placeholder="YYYY-MM-DD*" required pattern="\d{4}-\d{2}-\d{2}"><br>
+                                                        <input class="form-control" type="time" id="time" name="time" placeholder="00:00*" required><br>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-primary" id="appointSave">Save</button>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        <br><br>
+                                       <div class="table-responsive">
+                                            <!--Table-->
+                                            <table class="table table-striped" id="appTable">
+
+                                                <!--Table head-->
+                                                <thead>
+                                                    <tr>
+                                                        <th>Client</th>
+                                                        <th>Date</th>
+                                                        <th>Time</th>
+                                                        <th>Status</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                 </thead>                           
+                                                <!--Table body-->
+                                                <tbody id="tableAppoint">
+                                                    <?php $id=1 ; ?>
+                                                    @foreach($appointments as $key => $value)
+                                                        <tr id="app_{{$value->id}}">
+                                                            <td>{{$value->clients->name}}</td>
+                                                            <td>{{$value->date}}</td>
+                                                            <td>{{$value->time}}</td>
+                                                            <td>{{$value->status}}</td>
+                                                            <td>
+                                                            <a data-toggle="modal" data-target="#modal-app-edit" data-id="{{$value->id}}">
+                                                            <i class="fa fa-pen"></i></a>
+                                                            <a class="deletebtn" data-id="{{$value->id}}">
+                                                            <i class="fa fa-trash-o"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {{-- </div> --}}
+                                    <nav aria-label="">
+                                        <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="{{$appointments->previousPageUrl()}}" id="appP"><</a></li>
+                                            @if($appointments->currentPage() > 1)
+                                                <li class="page-item"><a class="page-link" href="{{$appointments->url($appointments->currentPage() -1)}}" id="appCb">{{$appointments->currentPage() -1}}</a></li>
+                                            @endif 
+                                            <li class="page-item"><a class="page-link" href="{{$appointments->url($appointments->currentPage())}}" id="appC">{{$appointments->currentPage()}}</a></li>
+                                            @if($appointments->currentPage()+1 < $appointments->lastPage())
+                                                <li class="page-item"><a class="page-link" href="{{$appointments->url($appointments->currentPage()+1)}}" id=appCn>{{$appointments->currentPage()+1}}</a></li>
+                                            @endif
+                                            <li class="page-item"><a class="page-link" href="{{$appointments->url($appointments->lastPage())}}" id="appL">...</a></li>
+                                            <li class="page-item"><a class="page-link" href="{{$appointments->nextPageUrl()}}" id="appN">></a></li>
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
                         </div>
@@ -226,14 +310,6 @@
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                         </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
                                     </div>
                                 </div>
                                 <!-- Card Body -->
@@ -265,16 +341,16 @@
                                     @endforeach
                                     <nav aria-label="Page navigation example">
                                         <ul class="pagination">
-                                            <li class="page-item"><a class="page-link" href="{{$feeds->previousPageUrl()}}"><</a></li>
+                                            <li class="page-item"><a class="page-link" href="{{$feeds->previousPageUrl()}}" id="feedP"><</a></li>
                                             @if($feeds->currentPage() > 1)
-                                                <li class="page-item"><a class="page-link" href="{{$feeds->url($feeds->currentPage() -1)}}">{{$feeds->currentPage() -1}}</a></li>
+                                                <li class="page-item"><a class="page-link" href="{{$feeds->url($feeds->currentPage() -1)}}" id="feedCb">{{$feeds->currentPage() -1}}</a></li>
                                             @endif 
-                                            <li class="page-item"><a class="page-link" href="{{$feeds->url($feeds->currentPage())}}">{{$feeds->currentPage()}}</a></li>
+                                            <li class="page-item"><a class="page-link" href="{{$feeds->url($feeds->currentPage())}}" id="feedC">{{$feeds->currentPage()}}</a></li>
                                             @if($feeds->currentPage()+1 < $feeds->lastPage())
-                                                <li class="page-item"><a class="page-link" href="{{$feeds->url($feeds->currentPage()+1)}}">{{$feeds->currentPage()+1}}</a></li>
+                                                <li class="page-item"><a class="page-link" href="{{$feeds->url($feeds->currentPage()+1)}}" id=feedCn>{{$feeds->currentPage()+1}}</a></li>
                                             @endif
-                                            <li class="page-item"><a class="page-link" href="{{$feeds->url($feeds->lastPage())}}">...</a></li>
-                                            <li class="page-item"><a class="page-link" href="{{$feeds->nextPageUrl()}}">></a></li>
+                                            <li class="page-item"><a class="page-link" href="{{$feeds->url($feeds->lastPage())}}" id="feedL">...</a></li>
+                                            <li class="page-item"><a class="page-link" href="{{$feeds->nextPageUrl()}}" id="feedN">></a></li>
                                         </ul>
                                     </nav>
                                 </div>
@@ -297,6 +373,41 @@
 
                 </div>
                 <!-- /.container-fluid -->
+                <!--MODAL EDIT-->
+                 <div class="modal fade" id="modal-app-edit" tabindex="-1" role="dialog" aria-labelledby="appCreateLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="appCreateLabel">Edit appointment</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-success" role="alert" id="statusAppFormE"></div>
+                            <form action="#" method="POST" id="appointEditForm">
+                                @csrf
+                                <input type="hidden" name="id" id="apppoint_id">
+                                <div class="form-group">
+                                    <select name="status" id="statusE" class="custom-select" aria-label=".form-select-lg example">
+                                        <option value="ongoing">Ongoing</option>
+                                        <option value="finished">Finish</option>
+                                        <option value="cancelled">Cancel</option>
+                                    </select>
+                                    <br><br>
+                                    <input class="form-control" type="date" id="dateE" name="date" placeholder="YYYY-MM-DD*" required pattern="\d{4}-\d{2}-\d{2}"><br>
+                                    <input class="form-control" type="time" id="timeE" name="time" placeholder="00:00*" required><br>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="appointUpdate">Save</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <!--END EDIT-->
 
             </div>
             <!-- End of Main Content -->
